@@ -6,6 +6,7 @@ export enum FLAG_REASON {
   PLAGIARISM = "Plagiarism",
   ABUSIVE_OR_RUDE = "Rude or Abusive",
   NOT_SPECIFIED = "Flag reason not specified",
+  OTHER = "Other",
 }
 
 export enum FLAG_REASON_DESCRIPTION {
@@ -16,4 +17,5 @@ export enum FLAG_REASON_DESCRIPTION {
   ABUSIVE_OR_RUDE = "Aims to offend; not respectful of community members",
   SPAM = "Exists only to promote a product or service",
   NOT_SPECIFIED = "Not specified",
+  OTHER = "", // Add this line
 }

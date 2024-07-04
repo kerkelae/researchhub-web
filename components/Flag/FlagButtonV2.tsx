@@ -28,6 +28,7 @@ type Props = {
   noButtonBackground?: boolean;
   onSubmit: (
     flagReason: KeyOf<typeof FLAG_REASON>,
+    flagDescription: string,
     renderErrorMsg: (error: Error) => void,
     renderSuccessMsg: () => void
   ) => void;
@@ -56,6 +57,8 @@ function FlagButtonV2({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [flagReason, setFlagReason] =
     useState<KeyOf<typeof FLAG_REASON>>(defaultReason);
+  const [flagDescription, setFlagDescription] = useState('');
+
   const formattedInputOptions = Object.keys(FLAG_REASON)
     .filter((k) => k !== "NOT_SPECIFIED")
     .map(
@@ -75,7 +78,7 @@ function FlagButtonV2({
     setMsgRedux(
       errorStatus === 409
         ? "You've already flagged this content"
-        : errorMsgText ?? "Failed. Flag likely removed alraedy."
+        : errorMsgText ?? "Failed. Flag likely removed already."
     );
     showMsgRedux({ show: true, error: true });
   };
@@ -84,9 +87,14 @@ function FlagButtonV2({
     showMsgRedux({ show: true, error: false });
   };
   const handleSubmit = (): void => {
+    if (flagReason === "OTHER" && !flagDescription.trim()) {
+      setMsgRedux("Please provide a description for 'Other' reason.");
+      showMsgRedux({ show: true, error: true });
+      return;
+    }
     setIsModalOpen(false);
     setFlagReason(defaultReason);
-    onSubmit(flagReason, renderErrorMsg, renderSuccessMsg);
+    onSubmit(flagReason, flagDescription, renderErrorMsg, renderSuccessMsg);
   };
 
   return (
@@ -128,6 +136,16 @@ function FlagButtonV2({
               labelDescriptionStyle={styles.labelDescriptionStyle}
               selectedID={flagReason}
             />
+            {flagReason === "OTHER" && (
+              <textarea
+                placeholder="Please provide a reason for flagging this content."
+                value={flagDescription}
+                onChange={(e) => setFlagDescription(e.target.value)}
+                className={css(styles.textAreaStyle)}
+                style={{ border: "1px solid black", padding: "5px" }}
+                required
+              />
+            )}
             <div className={css(styles.buttonWrap)}>
               <div
                 className={css(styles.cancelButton)}
@@ -175,7 +193,7 @@ const customModalStyle = StyleSheet.create({
   modalStyle: {
     maxHeight: "95vh",
     width: 500,
-    "@mediaonly screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
   },
@@ -265,6 +283,22 @@ const styles = StyleSheet.create({
     width: 126,
     ":hover": {
       background: colors.LIGHT_GREY_BACKGROUND,
+    },
+  },
+  textAreaStyle: {
+    fontFamily: "Roboto, sans-serif",
+    background: "white",
+    padding: "16px 20px",
+    borderRadius: "2px",
+    border: "1px solid",
+    borderColor: colors.GREY_BORDER,
+    color: colors.MEDIUM_GREY2(),
+    fontWeight: 500,
+    fontSize: 16,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+      fontSize: 14,
     },
   },
 });
