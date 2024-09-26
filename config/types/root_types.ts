@@ -319,7 +319,7 @@ export const parseAuthorProfile = (raw: any): AuthorProfile => {
     lastName: raw.last_name,
     url,
     description: raw.description,
-    isVerified: raw.is_verified_v2,
+    isVerified: raw.is_verified,
     headline: raw?.headline?.title || "",
     isHubEditor: raw.is_hub_editor,
     openAlexIds: raw.openalex_ids || [],
